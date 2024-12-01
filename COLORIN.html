@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorin</title>
+    <style>
+        .color-input {
+            width: 100px;
+            height: 30px;
+            text-align: center;
+        }
+        .red { background-color: red; color: white; }
+        .green { background-color: green; color: white; }
+        .blue { background-color: blue; color: white; }
+        table {
+            margin-bottom: 20px;
+        }
+
+        #save-button {
+            display: block;
+            margin: 20px auto;
+            background-color: #f5deb3;
+            border: 1px solid #d2b48c;
+            color: #000;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        #save-button:hover {
+            background-color: #e3c7a6;
+            border-color: #c4a984;
+        }
+    </style>
+</head>
+<body>
+    <h1>COLORIN</h1>
+    <table>
+        <tbody>
+            <script>
+                for (let i = 0; i < 5; i++) {
+                    document.write('<tr>');
+                    for (let j = 0; j < 5; j++) {
+                        document.write('<td><input type="text" class="color-input"></td>');
+                    }
+                    document.write('</tr>');
+                }
+            </script>
+        </tbody>
+    </table>
+
+    <div>
+        <p>Cantidad de Rojos: <span id="count-red">0</span></p>
+        <p>Cantidad de Verdes: <span id="count-green">0</span></p>
+        <p>Cantidad de Azules: <span id="count-blue">0</span></p>
+    </div>
+    <button id="save-button">Guardar</button>
+
+    <script>
+        function updateColorsAndCounts() {
+            let countRed = 0, countGreen = 0, countBlue = 0;
+            document.querySelectorAll('.color-input').forEach(input => {
+                const value = input.value.toLowerCase();
+                input.classList.remove('red', 'green', 'blue');
+                if (value === 'rojo') {
+                    input.classList.add('red');
+                    countRed++;
+                } else if (value === 'verde') {
+                    input.classList.add('green');
+                    countGreen++;
+                } else if (value === 'azul') {
+                    input.classList.add('blue');
+                    countBlue++;
+                }
+            });
+            document.getElementById('count-red').textContent = countRed;
+            document.getElementById('count-green').textContent = countGreen;
+            document.getElementById('count-blue').textContent = countBlue;
+        }
+
+        function loadData() {
+            const savedData = JSON.parse(localStorage.getItem('colorData')) || [];
+            const inputs = document.querySelectorAll('.color-input');
+            inputs.forEach((input, index) => {
+                input.value = savedData[index] || '';
+            });
+            updateColorsAndCounts();
+        }
+
+        function saveData() {
+            const inputs = document.querySelectorAll('.color-input');
+            const data = Array.from(inputs).map(input => input.value);
+            localStorage.setItem('colorData', JSON.stringify(data));
+            alert('Datos guardados exitosamente.');
+        }
+
+        document.addEventListener('input', updateColorsAndCounts);
+        document.getElementById('save-button').addEventListener('click', saveData);
+        window.onload = loadData;
+    </script>
+</body>
+</html>
